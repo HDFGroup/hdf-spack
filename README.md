@@ -3,11 +3,11 @@ It relies on Spack and the builtin Spack packages, some of which may be overridd
 
 ## Getting started
 
-Initial setup like:
+Initial setup for bash:
 
-```bash
 cd /path/your-working-dir
-git clone https://github.com/HDFGroup/hdf-spack
 git clone https://github.com/spack/spack.git
-./spack/bin/spack repo add hdf-spack
-
+git clone https://github.com/HDFGroup/hdf-spack
+source ../spack/share/spack/setup-env.sh
+spack repo add hdf-spack
+spack repo list
