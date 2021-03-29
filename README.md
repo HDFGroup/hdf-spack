@@ -8,6 +8,6 @@ Initial setup for bash:
 cd /path/your-working-dir
 git clone https://github.com/spack/spack.git
 git clone https://github.com/HDFGroup/hdf-spack
-source ../spack/share/spack/setup-env.sh
-spack repo add hdf-spack
+source ./spack/share/spack/setup-env.sh
+spack repo add ./hdf-spack
 spack repo list
