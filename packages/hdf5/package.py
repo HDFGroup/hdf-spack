@@ -67,7 +67,6 @@ class Hdf5(CMakePackage):
     variant('tools', default=False, description='Enable build tools')
     variant('mpi', default=True, description='Enable MPI support')
     variant('szip', default=False, description='Enable szip support')
-    variant('zlib', default=True, description='Enable zlib support')
     variant('pic', default=True,
             description='Produce position-independent code (for shared libs)')
     # Build HDF5 with API compatibility.
@@ -86,7 +85,7 @@ class Hdf5(CMakePackage):
     if sys.platform != 'darwin':
         depends_on('numactl', when='+mpi+fortran')
     depends_on('libaec', when='+szip')
-    depends_on('zlib@1.2.5:', when='+zlib')
+    depends_on('zlib@1.2.5:')
 
     # The Java wrappers and associated libhdf5_java library
     # were first available in 1.10
@@ -253,33 +252,20 @@ class Hdf5(CMakePackage):
 
         args.append(self.define_from_variant('BUILD_SHARED_LIBS', 'shared'))
 
-        if '+shared' in spec:
-            args.append('-DONLY_SHARED_LIBS=ON')
-        else:
-            args.append('-DONLY_SHARED_LIBS=OFF')
-
-        args.append(self.define_from_variant('HDF5_ENABLE_Z_LIB_SUPPORT', 'zlib'))
+        args.append(self.define_from_variant('ONLY_SHARED_LIBS', 'shared'))
 
         if '+szip' in spec:
             args.append(self.define_from_variant(
                         'HDF5_ENABLE_SZIP_SUPPORT', 'szip'))
-            args.append('-DUSE_LIBAEC:BOOL=ON')
-            args.append('-DHDF5_ENABLE_SZIP_ENCODING:BOOL=ON')
-            args.append(
-                '-DSZIP_INCLUDE_DIR:PATH={0}'.format(
-                    spec['libaec'].prefix.include))
-            args.append(
-                '-DSZIP_DIR:PATH={0}'.format(
-                    spec['libaec'].prefix.lib))
+            args.append(self.define('USE_LIBAEC', True))
+            args.append(self.define('HDF5_ENABLE_SZIP_ENCODING', True))
+            args.append(self.define('SZIP_INCLUDE_DIR', 
+                                        spec['libaec'].prefix.include))
+            args.append(self.define('SZIP_DIR', spec['libaec'].prefix.lib)) 
 
         args.append(self.define_from_variant('HDF5_BUILD_HL_LIB', 'hl'))
 
         args.append(self.define_from_variant('HDF5_ENABLE_PARALLEL', 'mpi'))
-
-        if '+debug' in spec:
-            args.append('-DCMAKE_BUILD_TYPE=Debug')
-        else:
-            args.append('-DCMAKE_BUILD_TYPE=Release')
 
         args.append(self.define_from_variant('HDF5_ENABLE_THREADSAFE', 'threadsafe'))
 
@@ -419,4 +405,3 @@ HDF5 version {version} {version}
 
         # Run existing install check
         self._check_install()
-
