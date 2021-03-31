@@ -1,4 +1,4 @@
-name: spack
+name: spack ubuntu
 
 on:
   push:
