@@ -1,4 +1,4 @@
-# Copyright 2013-2021 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2020 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -6,8 +6,10 @@
 import shutil
 import sys
 
+from spack import *
 
-class Hdf5(CMakePackage):
+
+class Hdf5Cmake(CMakePackage):
     """HDF5 is a data model, library, and file format for storing and managing
     data. It supports an unlimited variety of datatypes, and is designed for
     flexible and efficient I/O and for high volume and complex data.
@@ -17,12 +19,15 @@ class Hdf5(CMakePackage):
     url      = "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.gz"
     list_url = "https://support.hdfgroup.org/ftp/HDF5/releases"
     list_depth = 3
-    git      = "https://github.com/HDFGroup/hdf5.git"
-    maintainers = ['lrknox']
+    # git = "https://github.com/HDFGroup/hdf5.git"
+    git = "https://github.com/hyoklee/hdf5.git"
 
-    test_requires_compiler = True
+    # git = "https://github.com/hpc-io/hdf5.git"
+    # version('async', branch='async_vol_register_optional', preferred=True)
+    maintainers = ['lrknox', 'hyoklee']
 
-    version('develop', branch='develop')
+    # version('develop', branch='develop', preferred=True)
+    version('develop', branch='OESS-126', preferred=True)
     version('develop-1.12', branch='hdf5_1_12')
     version('develop-1.10', branch='hdf5_1_10')
     version('develop-1.8', branch='hdf5_1_8')
@@ -31,7 +36,8 @@ class Hdf5(CMakePackage):
     # HDF5 1.12 broke API compatibility, so we currently prefer the latest
     # 1.10 release.  packages that want later versions of HDF5 should specify,
     # e.g., depends_on("hdf5@1.12:") to get 1.12 or higher.
-    version('1.10.7', sha256='7a1a0a54371275ce2dfc5cd093775bb025c365846512961e7e5ceaecb437ef15', preferred=True)
+    # version('1.10.7', sha256='7a1a0a54371275ce2dfc5cd093775bb025c365846512961e7e5ceaecb437ef15', preferred=True)
+    version('1.10.7', sha256='7a1a0a54371275ce2dfc5cd093775bb025c365846512961e7e5ceaecb437ef15')
     version('1.10.6', sha256='5f9a3ee85db4ea1d3b1fa9159352aebc2af72732fc2f58c96a3f0768dba0e9aa')
     version('1.10.5', sha256='6d4ce8bf902a97b050f6f491f4268634e252a63dadd6656a1a9be5b7b7726fa8')
     version('1.10.4', sha256='8f60dc4dd6ab5fcd23c750d1dc5bca3d0453bdce5c8cdaf0a4a61a9d1122adb2')
@@ -41,7 +47,6 @@ class Hdf5(CMakePackage):
     version('1.10.0-patch1', sha256='6e78cfe32a10e6e0629393cdfddf6cfa536571efdaf85f08e35326e1b4e9eff0')
     version('1.10.0', sha256='81f6201aba5c30dced5dcd62f5d5477a2790fd5850e02ac514ca8bf3e2bb375a')
 
-    version('1.8.22', sha256='dcea864e16cb27ca9d2e325d2c49a5cac83ae314aec96ab1304a1200b6120a56')
     version('1.8.21', sha256='87d8c82eba5cf766d97cd06c054f4639c1049c4adeaa3a79f77f8bd374f80f37')
     version('1.8.19', sha256='a4335849f19fae88c264fd0df046bc321a78c536b2548fc508627a790564dc38')
     version('1.8.18', sha256='cdb195ad8d9e6782acf24b2488061289f615628c2ccda8457b0a0c3fb7a8a063')
@@ -57,6 +62,9 @@ class Hdf5(CMakePackage):
             description='Builds a debug version of the library')
     variant('shared', default=True,
             description='Builds a shared version of the library')
+    variant('static', default=True,
+            description='Builds a static version of the library')
+    conflicts('~static', '~shared')
 
     variant('hl', default=False, description='Enable the high-level library')
     variant('cxx', default=False, description='Enable C++ support')
@@ -64,34 +72,56 @@ class Hdf5(CMakePackage):
     variant('java', default=False, description='Enable Java support')
     variant('threadsafe', default=False,
             description='Enable thread-safe capabilities')
-    variant('tools', default=False, description='Enable build tools')
-    variant('mpi', default=True, description='Enable MPI support')
-    variant('szip', default=False, description='Enable szip support')
+    variant('tools', default=True, description='Enable build tools')
+    # variant('mpi', default=True, description='Enable MPI support')
+    variant('mpi', default=False, description='Enable MPI support')
+    variant('szip', default=True, description='Enable szip support')
+    variant('zlib', default=True, description='Enable zlib support')
     variant('pic', default=True,
             description='Produce position-independent code (for shared libs)')
     # Build HDF5 with API compatibility.
-    variant('api', default='default', description='Choose api compatibility for earlier version', values=('default', 'v114', 'v112', 'v110', 'v18', 'v16'), multi=False)
+    variant('api', default='none', description='Choose api compatibility', values=('none', 'v114', 'v112', 'v110', 'v18', 'v16'), multi=False)
+
+    # Build filter plugins.
+    variant('blosc', default=True, description='Enable blosc support')
+    variant('bshuf', default=True, description='Enable bshuf support')
+    variant('bz2', default=True, description='Enable bz2 support')
+    variant('jpeg', default=True, description='Enable jpeg support')
+    variant('lz4', default=True, description='Enable lz4 support')
+    variant('lzf', default=True, description='Enable lzf support')
+    variant('szf', default=True, description='Enable szf support')
+    variant('zfp', default=True, description='Enable zfp support')
+    variant('zstd', default=True, description='Enable zstd support')
+    variant('bitgroom', default=True, description='Enable bitgroom support')
+    variant('mafisc', default=True, description='Enable mafisc support')
+    variant('pv', default=False, description='Enable pass-through ext. VOL')
+    variant('av', default=False, description='Enable async VOL')
+    variant('cv', default=False, description='Enable cache VOL')
 
     conflicts('api=v114', when='@1.6:1.12.99', msg='v114 is not compatible with this release')
+    conflicts('api=v114', when='@:develop-1.12.99', msg='v114 is not compatible with this release')
     conflicts('api=v112', when='@1.6:1.10.99', msg='v112 is not compatible with this release')
+    conflicts('api=v112', when='@:develop-1.10.99', msg='v112 is not compatible with this release')
     conflicts('api=v110', when='@1.6:1.8.99', msg='v110 is not compatible with this release')
+    conflicts('api=v110', when='@:develop-1.8.99', msg='v110 is not compatible with this release')
     conflicts('api=v18', when='@1.6:1.6.99', msg='v18 is not compatible with this release')
+    conflicts('api=v18', when='@:develop-1.6.99', msg='v18 is not compatible with this release')
 
-    depends_on('cmake@3.12:')
-
+    depends_on('cmake@3.12.4:', type='build')
     depends_on('mpi', when='+mpi')
     depends_on('java', type=('build', 'run'), when='+java')
+    conflicts('+java', when='~shared')
     # numactl does not currently build on darwin
     if sys.platform != 'darwin':
         depends_on('numactl', when='+mpi+fortran')
-    depends_on('libaec', when='+szip')
-    depends_on('zlib@1.1.2:')
+    depends_on('szip', when='+szip')
+    depends_on('zlib@1.2.5:', when='+zlib')
+    depends_on('zstd', when='+zstd')
+    depends_on('argobots', when='+av')
 
     # The Java wrappers and associated libhdf5_java library
     # were first available in 1.10
     conflicts('+java', when='@:1.9')
-    # The Java wrappers cannot be built without shared libs.
-    conflicts('+java', when='~shared')
 
     # There are several officially unsupported combinations of the features:
     # 1. Thread safety is not guaranteed via high-level C-API but in some cases
@@ -136,7 +166,7 @@ class Hdf5(CMakePackage):
 
     # Disable MPI C++ interface when C++ is disabled, otherwise downstream
     # libraries fail to link; see https://github.com/spack/spack/issues/12586
-    patch('h5public-skip-mpicxx.patch', when='@1.8.10:1.8.21,1.10.0:1.10.5+mpi~cxx',
+    patch('h5public-skip-mpicxx.patch', when='@1.8.10:1.10.5+mpi~cxx',
           sha256='b61e2f058964ad85be6ee5ecea10080bf79e73f83ff88d1fa4b602d00209da9c')
 
     # The argument 'buf_size' of the C function 'h5fget_file_image_c' is
@@ -236,57 +266,173 @@ class Hdf5(CMakePackage):
             msg = 'cannot build a Fortran variant without a Fortran compiler'
             raise RuntimeError(msg)
 
+    def java_check(self):
+        if '+java' in self.spec and not self.compiler.java:
+            msg = 'cannot build a Java variant without a Java compiler'
+            raise RuntimeError(msg)
+
+    def cmake_use_cacheinit(self, args):
+        # The following will not work.
+        # args.append('-C /scr/hyoklee/src/hdf5-byrn/config/cmake/cacheinit.cmake')
+        # Instead, split the arguments like the following 
+        args.append('-C')
+        # Use full path instead of 'config/cmake/cacheinit.cmake'.
+        # E.g., args.append('/scr/hyoklee/src/hdf5/config/cmake/cacheinit.cmake')
+        cf = self.build_directory+'/../spack-src/config/cmake/cacheinit.cmake'
+        args.append(cf)
+        args.append('-DHDF5_ENABLE_PLUGIN_SUPPORT:BOOL=ON')
+        args.append('-DPLUGIN_GIT_URL:STRING=https://github.com/hyoklee/hdf5_plugins.git')
+        # Use git instead of tar.gz archives.
+        args.append('-DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING=GIT')
+
+        # If you want to use tar.gz, use the followings.
+        # args.append('-DHDF5_ALLOW_EXTERNAL_SUPPORT:STRING=TGZ')
+        # args.append('-DTGZPATH:STRING=/scr/hyoklee/x')
+
     def cmake_args(self):
-        spec = self.spec
 
         # Always enable this option. This does not actually enable any
         # features: it only *allows* the user to specify certain
         # combinations of other arguments. Enabling it just skips a
         # sanity check in configure, so this doesn't merit a variant.
-        args = [
-            self.define('ALLOW_UNSUPPORTED', True),
-            self.define('BUILD_TESTING', self.run_tests),
-            self.define('HDF5_ENABLE_Z_LIB_SUPPORT', True),
-            self.define_from_variant('HDF5_ENABLE_SZIP_SUPPORT', 'szip'),
-            self.define_from_variant('BUILD_SHARED_LIBS', 'shared'),
-            self.define_from_variant('ONLY_SHARED_LIBS', 'shared'),
-            self.define_from_variant('HDF5_ENABLE_PARALLEL', 'mpi'),
-            self.define_from_variant('HDF5_ENABLE_THREADSAFE', 'threadsafe'),
-            self.define_from_variant('HDF5_BUILD_HL_LIB', 'hl'),
-            self.define_from_variant('HDF5_BUILD_CPP_LIB', 'cxx'),
-            self.define_from_variant('HDF5_BUILD_FORTRAN', 'fortran'),
-            self.define_from_variant('HDF5_BUILD_JAVA', 'java'),
-            self.define_from_variant('HDF5_BUILD_TOOLS', 'tools')
-        ]
+        args = [self.define('ALLOW_UNSUPPORTED', True)]
 
-        if '+szip' in spec:
-            args.append(self.define('USE_LIBAEC', True))
-            args.append(self.define('HDF5_ENABLE_SZIP_ENCODING', True))
+        args.append(self.define_from_variant('BUILD_SHARED_LIBS', 'shared'))
+
+        if '+pic' in self.spec:
+            args.extend([
+                'CFLAGS='   + self.compiler.cc_pic_flag,
+                'CXXFLAGS=' + self.compiler.cxx_pic_flag,
+                'FCFLAGS='  + self.compiler.fc_pic_flag,
+            ])
+
+        if '+zlib' in self.spec:
+            args.append('-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON')
             args.append(
-                self.define('SZIP_INCLUDE_DIR', spec['libaec'].prefix.include))
-            args.append(self.define('SZIP_DIR', spec['libaec'].prefix.lib))
+                '-DZLIB_INCLUDE_DIR:PATH={0}'.format(
+                    self.spec['zlib'].prefix.include))
+            args.append(
+                '-DZLIB_DIR:PATH={0}'.format(
+                    self.spec['zlib'].prefix.lib))
+        else:
+            args.append('-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=OFF')
 
-        api = spec.variants['api'].value
-        if api != 'default':
-            args.append(self.define('DEFAULT_API_VERSION', api))
+        if '+szip' in self.spec:
+            args.append('-DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON')
+            args.append('-DHDF5_ENABLE_SZIP_ENCODING:BOOL=ON')
+            args.append(
+                '-DSZIP_INCLUDE_DIR:PATH={0}'.format(
+                    self.spec['szip'].prefix.include))
+            args.append(
+                '-DSZIP_DIR:PATH={0}'.format(
+                    self.spec['szip'].prefix.lib))
+        else:
+            args.append('-DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF')
+
+
+        # Build plugin filters.
+        self.cmake_use_cacheinit(args)
+        if '~blosc' in self.spec:
+            args.append('-DENABLE_BLOSC:BOOL=OFF')
+
+        if '~bshuf' in self.spec:
+            args.append('-DENABLE_BSHUF:BOOL=OFF')
+
+        if '~bz2' in self.spec:
+            args.append('-DENABLE_BZIP2:BOOL=OFF')
+
+        if '~jpeg' in self.spec:
+            args.append('-DENABLE_JPEG:BOOL=OFF')
+
+        if '~lz4' in self.spec:
+            args.append('-DENABLE_LZ4:BOOL=OFF')
+
+        if '~lzf' in self.spec:
+            args.append('-DENABLE_LZF:BOOL=OFF')
+
+        if '~zfp' in self.spec:
+            args.append('-DENABLE_ZFP:BOOL=OFF')
+
+        if '~szf' in self.spec:
+            args.append('-DENABLE_SZF:BOOL=OFF')
+
+        if '~zstd' in self.spec:
+            args.append('-DENABLE_ZSTD:BOOL=OFF')
+        else:
+            args.append(
+                '-DZSTD_INCLUDE_DIR:PATH={0}'.format(
+                    self.spec['zstd'].prefix.include))
+            args.append(
+                '-DZSTD_DIR:PATH={0}'.format(
+                    self.spec['zstd'].prefix.lib))
+
+        if '~bitgroom' in self.spec:
+            args.append('-DENABLE_BITGROOM:BOOL=OFF')
+
+        if '~mafisc' in self.spec:
+            args.append('-DENABLE_MAFISC:BOOL=OFF')
+
+        if '~pv' in self.spec:
+            args.append('-DENABLE_PV:BOOL=OFF')
+
+        if '~av' in self.spec:
+            args.append('-DENABLE_AV:BOOL=OFF')
+
+        if '~cv' in self.spec:
+            args.append('-DENABLE_CV:BOOL=OFF')
+
+        if '+mpi' in self.spec:
+            args.append('-DHDF5_ENABLE_PARALLEL=ON')
+            args.append('-DMPIEXEC_NUMPROC_FLAG:STRING=-n')
+            args.append('-DMPIEXEC_MAX_NUMPROCS:STRING=6')
+            args.append('-DCMAKE_C_COMPILER={0}'.format(self.spec['mpi'].mpicc))
+            args.append('-DCMAKE_CXX_COMPILER={0}'.format(self.spec['mpi'].mpicxx))
+            args.append(
+                '-DCMAKE_Fortran_COMPILER={0}'.format(self.spec['mpi'].mpifc))
+        else:
+            args.append('-DHDF5_ENABLE_PARALLEL=OFF')
+
+        if '+static' in self.spec:
+            args.append('-DONLY_SHARED_LIBS=OFF')
+        else:
+            args.append('-DONLY_SHARED_LIBS=ON')
+
+        if '+debug' in self.spec:
+            args.append('-DCMAKE_BUILD_TYPE=Debug')
+        else:
+            args.append('-DCMAKE_BUILD_TYPE=Release')
+
+        args.append(self.define_from_variant('HDF5_ENABLE_THREADSAFE', 'threadsafe'))
+
+        args.append(self.define_from_variant('HDF5_BUILD_HL_LIB', 'hl'))
+
+        args.append(self.define_from_variant('HDF5_BUILD_CPP', 'cxx'))
+
+        args.append(self.define_from_variant('HDF5_BUILD_FORTRAN', 'fortran'))
+
+        args.append(self.define_from_variant('HDF5_BUILD_JAVA', 'java'))
+
+        args.append(self.define_from_variant('HDF5_BUILD_TOOLS', 'tools'))
+
+
+        #if self.run_tests:
+        #    args.append('-DBUILD_TESTING=ON')
+        #else:
+        #   args.append('-DBUILD_TESTING=OFF')
+
+        if self.spec.variants['api'].value != 'none':
+            args.append(
+                '-DDEFAULT_API_VERSION={0}'.format(
+                    self.spec.variants['api'].value))
 
         return args
 
-    @run_after('cmake')
-    def patch_libtool(self):
-        """AOCC support for HDF5"""
-        if '%aocc' in self.spec:
-            filter_file(
-                r'\$wl-soname \$wl\$soname',
-                r'-fuse-ld=ld -Wl,-soname,\$soname',
-                'libtool', string=True)
-
     @run_after('install')
     @on_package_attributes(run_tests=True)
+    def test(self):
+        # https://spack.readthedocs.io/en/latest/build_systems/custompackage.html
+        make('test')
     def check_install(self):
-        self._check_install()
-
-    def _check_install(self):
         # Build and run a small program to test the installed HDF5 library
         spec = self.spec
         print("Checking HDF5 installation...")
@@ -335,54 +481,3 @@ HDF5 version {version} {version}
                 print('-' * 80)
                 raise RuntimeError("HDF5 install check failed")
         shutil.rmtree(checkdir)
-
-    def _test_check_versions(self):
-        """Perform version checks on selected installed package binaries."""
-        spec_vers_str = 'Version {0}'.format(self.spec.version)
-
-        exes = [
-            'h5copy', 'h5diff', 'h5dump', 'h5format_convert', 'h5ls',
-            'h5mkgrp', 'h5repack', 'h5stat', 'h5unjam',
-        ]
-        use_short_opt = ['h52gif', 'h5repart', 'h5unjam']
-        for exe in exes:
-            reason = 'test: ensuring version of {0} is {1}' \
-                .format(exe, spec_vers_str)
-            option = '-V' if exe in use_short_opt else '--version'
-            self.run_test(exe, option, spec_vers_str, installed=True,
-                          purpose=reason, skip_missing=True)
-
-    def _test_example(self):
-        """This test performs copy, dump, and diff on an example hdf5 file."""
-        test_data_dir = self.test_suite.current_test_data_dir
-
-        filename = 'spack.h5'
-        h5_file = test_data_dir.join(filename)
-
-        reason = 'test: ensuring h5dump produces expected output'
-        expected = get_escaped_text_output(test_data_dir.join('dump.out'))
-        self.run_test('h5dump', filename, expected, installed=True,
-                      purpose=reason, skip_missing=True,
-                      work_dir=test_data_dir)
-
-        reason = 'test: ensuring h5copy runs'
-        options = ['-i', h5_file, '-s', 'Spack', '-o', 'test.h5', '-d',
-                   'Spack']
-        self.run_test('h5copy', options, [], installed=True,
-                      purpose=reason, skip_missing=True, work_dir='.')
-
-        reason = ('test: ensuring h5diff shows no differences between orig and'
-                  ' copy')
-        self.run_test('h5diff', [h5_file, 'test.h5'], [], installed=True,
-                      purpose=reason, skip_missing=True, work_dir='.')
-
-    def test(self):
-        """Perform smoke tests on the installed package."""
-        # Simple version check tests on known binaries
-        self._test_check_versions()
-
-        # Run sequence of commands on an hdf5 file
-        self._test_example()
-
-        # Run existing install check
-        self._check_install()
