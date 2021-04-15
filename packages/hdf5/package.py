@@ -164,12 +164,10 @@ class Hdf5(CMakePackage):
     @property
     def libs(self):
         """HDF5 can be queried for the following parameters:
-
         - "hl": high-level interface
         - "cxx": C++ APIs
         - "fortran": Fortran APIs
         - "java": Java APIs
-
         :return: list of matching libraries
         """
         query_parameters = self.spec.last_query.extra_parameters
