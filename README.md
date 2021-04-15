@@ -13,8 +13,7 @@ source ./spack/share/spack/setup-env.sh
 spack repo add ./hdf-spack
 spack repo list
 ```
-
-This repo's packages are now available locally and have precidence over Spack's builtin repo.
+This repo's packages are now available locally and have precedence over Spack's builtin repo.
 
 The following spack command example will show you which repositories (Namespaces) will be used in a build for a given package before you install it:
 
@@ -22,6 +21,16 @@ The following spack command example will show you which repositories (Namespaces
 spack spec -N hdf5
 ```
 
+The hdf-spack repository contains files for two spack packages:  hdf5 and hdf5-cmake.
+The hdf5 package is an update to the hdf5 package in the official spack repository
+that switches from Autotools to CMake for building HDF5.  Changes can be seen in the
+pull request:  https://github.com/spack/spack/pull/18937.
+
+The hdf5-cmake package has most of those updates and also has new variants to enable
+these compression filters:
+    blosc bshuf bz2 jpeg lz4 lzf szf
+    zfp zstd bitgroom mafisc pv av cv
+The filters are enabled by default.
 
 ## References: 
 
