@@ -15,6 +15,7 @@ spack repo list
 ```
 
 This repo's packages are now available locallay and have precidence over Spack's builtin repo.
+
 The following spack command example will show you which repositories (Namespaces) will be used in a build for a given package before you install it:
 
 ```
@@ -34,4 +35,3 @@ This repo uses a local/private repo as described in the Spack Documenation: http
 
 There is an active Spack Repo PR in-progress at for the migration of HDF5 for building with CMake.
 https://github.com/spack/spack/pull/18937
-
