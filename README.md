@@ -14,7 +14,7 @@ spack repo add ./hdf-spack
 spack repo list
 ```
 
-This repo's packages are now available locallay and have precidence over Spack's builtin repo.
+This repo's packages are now available locally and have precidence over Spack's builtin repo.
 
 The following spack command example will show you which repositories (Namespaces) will be used in a build for a given package before you install it:
 
