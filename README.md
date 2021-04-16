@@ -21,7 +21,8 @@ The following spack command example will show you which repositories (Namespaces
 spack spec -N hdf5
 ```
 
-The hdf-spack repository contains files for two spack packages:  hdf5 and hdf5-cmake.
+The hdf-spack repository contains files for three spack package options: 
+hdf5,  hdf5-cmake, and hdf5-autotools.
 The hdf5 package is an update to the hdf5 package in the official spack repository
 that switches from Autotools to CMake for building HDF5.  Changes can be seen in the
 pull request:  https://github.com/spack/spack/pull/18937.
@@ -31,6 +32,8 @@ these compression filters:
     blosc bshuf bz2 jpeg lz4 lzf szf
     zfp zstd bitgroom mafisc pv av cv
 The filters are enabled by default.
+
+The hdf5-autotools package is equivalent to the current hdf5 package in Spack. 
 
 ## References: 
 
