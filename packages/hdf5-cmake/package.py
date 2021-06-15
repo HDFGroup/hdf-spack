@@ -23,7 +23,7 @@ class Hdf5Cmake(CMakePackage):
     git = "https://github.com/hyoklee/hdf5.git"
 
     # git = "https://github.com/hpc-io/hdf5.git"
-    # version('async', branch='async_vol_register_optional', preferred=True)
+    # version('async', branch='develop', preferred=True)
     maintainers = ['lrknox', 'hyoklee']
 
     # version('develop', branch='develop', preferred=True)

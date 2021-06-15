@@ -12,8 +12,8 @@ class Hdf5VolAsync(CMakePackage):
     git      = "https://github.com/hpc-io/vol-async"
     maintainers = ['hyoklee']
 
-    version('async_vol_register_optional',
-            branch='async_vol_register_optional')
+    version('develop',
+            branch='develop')
 
     depends_on('argobots@main')
     depends_on('hdf5-hpc-io')
