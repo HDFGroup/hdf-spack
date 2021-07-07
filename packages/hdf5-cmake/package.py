@@ -168,7 +168,8 @@ class Hdf5Cmake(CMakePackage):
     # libraries fail to link; see https://github.com/spack/spack/issues/12586
     patch('h5public-skip-mpicxx.patch', when='@1.8.10:1.10.5+mpi~cxx',
           sha256='b61e2f058964ad85be6ee5ecea10080bf79e73f83ff88d1fa4b602d00209da9c')
-
+    patch('cacheinit.patch')
+    
     # The argument 'buf_size' of the C function 'h5fget_file_image_c' is
     # declared as intent(in) though it is modified by the invocation. As a
     # result, aggressive compilers such as Fujitsu's may do a wrong
