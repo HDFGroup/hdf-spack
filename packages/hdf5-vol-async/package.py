@@ -24,10 +24,6 @@ class Hdf5VolAsync(CMakePackage):
     # Use the following if you want to use HDFGroup/hdf5@develop-1.3 instead.
     # depends_on('hdf5@develop-1.13+mpi+threadsafe')
 
-    # These are for testing with the generic 'make' command.
-    # patch('Makefile.patch')
-    # patch('src_Makefile.patch')
-    # patch('test_Makefile.patch')
     def cmake_args(self):
         """Populate cmake arguments for HDF5 VOL."""
         spec = self.spec
