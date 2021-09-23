@@ -13,8 +13,8 @@ from spack import *
 
 class Hdf5HpcIo(CMakePackage):
     git = "https://github.com/hpc-io/hdf5.git"
-    version('async_vol_register_optional',
-            branch='async_vol_register_optional', 
+    version('develop',
+            branch='develop', 
             preferred=True)
     maintainers = ['hyoklee']
     variant('hl', default=False, description='Enable the high-level library')

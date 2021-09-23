@@ -1,0 +1,31 @@
+name: Test Log-based VOL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout hdf-spack
+      uses: actions/checkout@v2
+    - name: Checkout spack
+      uses: actions/checkout@v2
+      with:
+        repository: spack/spack
+        path: ./spack
+
+    - name: Run a multi-line script
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y libopenmpi-dev
+        . ./spack/share/spack/setup-env.sh
+        spack repo add .
+        spack repo list
+        spack install hdf5-vol-log
+
+        
