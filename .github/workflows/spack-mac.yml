@@ -24,5 +24,4 @@ jobs:
         spack repo add .
         spack repo list
         spack install hdf5-cmake
-        spack install hdf5-hpc-io
-        spack install --test root hdf5-vol-tests+vol-cache
+        spack install hdf5-vol-tests+vol-cache
