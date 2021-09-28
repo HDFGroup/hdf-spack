@@ -12,10 +12,10 @@ class Hdf5VolAsync(CMakePackage):
     git      = "https://github.com/hpc-io/vol-async"
     maintainers = ['hyoklee']
 
-    version('develop', branch='develop')
+    version('develop', branch='develop', preferred=True)
     version('hyoklee.develop',
             branch='develop',
-            git='https://github.com/hyoklee/vol-async', preferred=True)
+            git='https://github.com/hyoklee/vol-async')
     version('local.develop', branch='develop',
             git='file:///scr/hyoklee/src/vol-async')
 
