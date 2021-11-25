@@ -29,7 +29,8 @@ jobs:
     - name: Run a multi-line script
       run: |
         set
-        echo "/usr/local/cuda-11.5/bin" >> $GITHUB_PATH
+        export PATH="/usr/local/cuda-11.5/bin:$PATH"
+        set
         . ./spack/share/spack/setup-env.sh
         spack repo add .
         spack repo list
