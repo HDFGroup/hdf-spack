@@ -21,7 +21,7 @@ class Hdf5VfdGds(CMakePackage, CudaPackage):
     # Dependencies
     depends_on('cuda')    
     depends_on('cmake@3.12:')
-    depends_on('hdf5@develop-1.13')    
+    depends_on('hdf5@1.13.0:')    
 
 
     def cmake_args(self):
