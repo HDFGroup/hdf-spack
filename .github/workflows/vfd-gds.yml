@@ -26,9 +26,12 @@ jobs:
       with:
         repository: hyoklee/spack
         path: ./spack
-
     - name: Run a multi-line script
+      env:
+        PATH: /usr/local/cuda-11.5/bin:$PATH
+        LD_LIBRARY_PATH: /usr/local/cuda-11.5/lib64:$LD_LIBRARY_PATH
       run: |
+        env
         . ./spack/share/spack/setup-env.sh
         spack repo add .
         spack repo list
