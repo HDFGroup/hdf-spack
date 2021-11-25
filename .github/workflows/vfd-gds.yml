@@ -31,7 +31,6 @@ jobs:
         PATH: /usr/local/cuda-11.5/bin:$PATH
         LD_LIBRARY_PATH: /usr/local/cuda-11.5/lib64:$LD_LIBRARY_PATH
       run: |
-        env
         . ./spack/share/spack/setup-env.sh
         spack repo add .
         spack repo list
