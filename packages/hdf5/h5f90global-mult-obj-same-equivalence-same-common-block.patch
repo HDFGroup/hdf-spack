@@ -14,4 +14,3 @@ index dd2b171..629418a 100644
    EQUIVALENCE (predef_types(6), H5T_NATIVE_INTEGER)
    EQUIVALENCE (predef_types(7), H5T_NATIVE_REAL)
    EQUIVALENCE (predef_types(8), H5T_NATIVE_DOUBLE)
-
