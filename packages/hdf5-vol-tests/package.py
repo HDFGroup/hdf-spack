@@ -30,8 +30,8 @@ class Hdf5VolTests(CMakePackage):
     variant('vol-rest', default=False, 
             description='Enable REST VOL')
 
-    variant('async', default=True, description='Enable parallel tests.')
-    variant('parallel', default=True, description='Enable async API tests.')
+    variant('async', default=True, description='Enable async API tests.')
+    variant('parallel', default=True, description='Enable parallel tests.')
     variant('part', default=True, 
             description='Enable building the main test executable.')
     depends_on('szip')
