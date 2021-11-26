@@ -23,5 +23,4 @@ jobs:
         . ./spack/share/spack/setup-env.sh      
         spack repo add .
         spack repo list
-        spack install hdf5-cmake
         spack install hdf5-vol-tests+vol-cache
