@@ -14,7 +14,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get -y update
-        sudo apt-get -y install ninja-build automake autoconf libtool libtool-bin libopenmpi-dev libpthread-stubs0-dev 
+        sudo apt-get -y install ninja-build automake autoconf cmake libtool libtool-bin libopenmpi-dev libpthread-stubs0-dev 
     - name: Install GDS/CUDA
       run: |
         wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
@@ -39,4 +39,4 @@ jobs:
         spack repo add .
         spack repo list
         spack external find cuda                
-        spack install hdf5-vfd-gds@master
+        spack install hdf5-vfd-gds@master ^openmpi@4.0.3 ^cmake@3.16.3
