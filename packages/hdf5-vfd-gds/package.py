@@ -16,7 +16,8 @@ class Hdf5VfdGds(CMakePackage, CudaPackage):
 
     # Versions
     version('master', branch='master')
-    version('1.0.0', sha256='6b16105c7c49f13fc05784ee69b78d45fb159270c78d760689f9cd21e230ddd2', default=True)
+    version('1.0.1', sha256='00e125fd149561be991f41e883824de826d8add604aebccf103a4fb82d5faac2', default=True)
+    version('1.0.0', sha256='6b16105c7c49f13fc05784ee69b78d45fb159270c78d760689f9cd21e230ddd2')
     
     # Dependencies
     depends_on('cuda')    
