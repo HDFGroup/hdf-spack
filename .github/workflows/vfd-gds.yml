@@ -1,0 +1,42 @@
+name: VFD GDS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get -y update
+        sudo apt-get -y install ninja-build automake autoconf cmake libtool libtool-bin libopenmpi-dev libpthread-stubs0-dev 
+    - name: Install GDS/CUDA
+      run: |
+        wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+        sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+        sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+        sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+        sudo apt-get -y update
+        sudo apt-get -y install cuda
+    - name: Checkout hdf-spack
+      uses: actions/checkout@v2
+    - name: Checkout spack
+      uses: actions/checkout@v2
+      with:
+        repository: spack/spack
+        path: ./spack
+    - name: Run a multi-line script
+      run: |
+        set
+        export PATH="/usr/local/cuda-11.5/bin:$PATH"
+        set
+        . ./spack/share/spack/setup-env.sh
+        spack repo add .
+        spack repo list
+        spack external find cuda                
+        spack install hdf5-vfd-gds@master ^openmpi@4.0.3 ^cmake@3.16.3

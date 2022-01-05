@@ -21,9 +21,10 @@ jobs:
 
     - name: Run a multi-line script
       run: |
+        sudo apt-get update -y
+        sudo apt-get install -y libopenmpi-dev      
         . ./spack/share/spack/setup-env.sh
         spack repo add .
         spack repo list
-        spack install hdf5-cmake
-        spack install hdf5-hpc-io
+        spack install hdf5-vol-async
         
