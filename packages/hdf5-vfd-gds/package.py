@@ -10,7 +10,7 @@ class Hdf5VfdGds(CMakePackage, CudaPackage):
 
     # Package info
     homepage    = 'https://github.com/hpc-io/vfd-gds'
-    url = 'https://github.com/hpc-io/vfd-gds/archive/refs/tags/1.0.0.tar.gz'
+    url = 'https://github.com/hpc-io/vfd-gds/archive/refs/tags/1.0.1.tar.gz'
     git         = 'https://github.com/hpc-io/vfd-gds.git'
     maintainers = ['hyoklee', 'lrknox']
 
